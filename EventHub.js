@@ -28,7 +28,7 @@ var eventHub = {
 
 var SAS = {
     sas: null,
-    serverUrl: "PUT SAS URL HERE",
+    serverUrl: null,
 
     // Updates sas then runs the passed function on load end.
     updateThenOnLoadEnd: function (onLoadEndFunction) {
@@ -43,7 +43,7 @@ var SAS = {
             }
         }
 
-        xmlHttp.open("GET", SAS.serverUrl, true); 
+        xmlHttp.open("GET", SAS.serverUrl, true);
         // Don't cache to ensure new SAS.
         xmlHttp.setRequestHeader("Pragma", "no-cache");
         xmlHttp.send(null);
@@ -62,7 +62,6 @@ var SAS = {
 
 
 }
-SAS.update();
 
 var pageData = {
     EntryTime: Date.now(),
@@ -105,8 +104,6 @@ function purchaseEvent() {
 function sendClick(a) {
     var click = clickEvent(a.href);
     eventHub.sendObject(click);
-    // Temporary:
-    document.getElementById('clickEvent').innerHTML = JSON.stringify(click);
     return true;
 }
 
@@ -126,11 +123,10 @@ function sendPurchase(purchaseForm) {
     // TODO: Set up session id.
 
     eventHub.sendObject(p);
-    document.getElementById('purchaseEvent').innerHTML = JSON.stringify(p);
     return true;
 }
 
-window.onload = function () {
+function addEventsToPage() {
     // Set on click events from links.
     var links = document.getElementsByTagName("a");
     for (var i = 0; i < links.length; i++) {
@@ -140,6 +136,6 @@ window.onload = function () {
     // Set up on click events for purchases.
     var purchaseForm = document.getElementById("purchaseForm");
     purchaseForm.elements['purchase'].setAttribute('onclick', "sendPurchase(this.parentNode);");
+
 }
-
-
+window.onload = addClickEventsToLinks();
