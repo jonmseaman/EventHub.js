@@ -138,4 +138,12 @@ function addEventsToPage() {
     purchaseForm.elements['purchase'].setAttribute('onclick', "sendPurchase(this.parentNode);");
 
 }
-window.onload = addClickEventsToLinks();
+window.onload = addEventsToPage();
+
+eventHub.namespace = "ServiceBusIntern2016";
+eventHub.name = "sellersite";
+eventHub.deviceName = "webClient";
+
+SAS.serverUrl = "/SASServer/SAS";
+
+SAS.update();
