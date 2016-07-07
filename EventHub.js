@@ -107,6 +107,7 @@ function sendClick(a) {
     eventHub.sendObject(click);
     // Temporary:
     document.getElementById('clickEvent').innerHTML = JSON.stringify(click);
+    return true;
 }
 
 function sendPurchase(purchaseForm) {
@@ -126,6 +127,7 @@ function sendPurchase(purchaseForm) {
 
     eventHub.sendObject(p);
     document.getElementById('purchaseEvent').innerHTML = JSON.stringify(p);
+    return true;
 }
 
 window.onload = function () {
