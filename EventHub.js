@@ -147,3 +147,5 @@ eventHub.deviceName = "webClient";
 SAS.serverUrl = "/SASServer/SAS";
 
 SAS.update();
+// Update SAS every 15 minutes.
+window.setInterval(SAS.update, 15*60*1000); 
