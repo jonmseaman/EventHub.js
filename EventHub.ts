@@ -134,12 +134,12 @@ function addEventsToPage() {
     }
 
     // Set up on click events for purchases.
-    var purchaseForm = document.getElementById("purchaseForm");
-    purchaseForm.elements['purchase'].setAttribute('onclick', "sendPurchase(this.parentNode);");
+    // var purchaseForm = document.getElementById("purchaseForm");
+    // purchaseForm.elements['purchase'].setAttribute('onclick', "sendPurchase(this.parentNode);");
     
 
 }
-window.onload = addEventsToPage();
+window.onload = addEventsToPage;
 
 eventHub.namespace = "ServiceBusIntern2016";
 eventHub.name = "sellersite";
