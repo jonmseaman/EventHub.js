@@ -67,7 +67,8 @@ var pageData = {
     EntryTime: Date.now(),
 }
 
-function clickEvent(nextUrl) {
+function clickEvent(nextUrl, email) {
+    var user = getUser();
     var click = {
         CurrentUrl: window.location.href,
         NextUrl: nextUrl,
@@ -75,48 +76,41 @@ function clickEvent(nextUrl) {
         ExitTime: Date.now(),
 
         // User
-        Email: "jon@example.com",
+        Email: email,
         // Session Id
         SessionId: "1",
         EventType: 1,
     }
-
     return click;
 }
 
-function purchaseEvent() {
+function purchaseEvent(productId, price, quantity, time, email, sessionId) {
     var purchase = {
-        ProductId: 1,
-        Price: 250,
-        Quantity: 1,
-        Time: Date.now(),
+        ProductId: productId,
+        Price: price,
+        Quantity: quantity,
+        Time: time,
 
         // User
-        Email: "jon@example.com",
+        Email: email,
         // Session Id
-        SessionId: "1",
+        SessionId: sessionId,
         EventType: 2,
     }
 
     return purchase;
 }
 
-function sendClick(a) {
-    var click = clickEvent(a.href);
+function sendClick(click) {
+    //var click = clickEvent(a.href);
+    console.log(JSON.stringify(click));
     eventHub.sendObject(click);
     return true;
 }
 
-function sendPurchase(purchaseForm) {
+function sendPurchase(pEvent) {
     console.log('Sending a purchase event.');
-    var elems = purchaseForm;
-    var p = purchaseEvent();
-
-    p.Email = elems['Email'].value;
-    p.ProductId = elems['ProductId'].value;
-    p.Price = elems['Price'].value;
-    p.Quantity = elems['Quantity'].value;
-    p.Time = elems['Time'].value;
+    var p = pEvent;
 
     console.log(JSON.stringify(p));
 
@@ -130,14 +124,42 @@ function addEventsToPage() {
     // Set on click events from links.
     var links = document.getElementsByTagName("a");
     for (var i = 0; i < links.length; i++) {
-        links[i].setAttribute("onclick", "sendClick(this);");
+        links[i].setAttribute("onclick", "getUser(this);");
     }
 
     // Set up on click events for purchases.
-    // var purchaseForm = document.getElementById("purchaseForm");
-    // purchaseForm.elements['purchase'].setAttribute('onclick', "sendPurchase(this.parentNode);");
-    
+    var checkoutBtn = document.getElementById('MainContent_CheckoutImageBtn');
+    checkoutBtn.setAttribute("onclick", "getPurchaseData();");
 
+}
+
+function getPurchaseData() {
+    $.ajax({
+        url: '/api/Product/5',
+        type: 'GET',
+        data: { s1: 's', i1: 1 },
+        datatype: 'json',
+        success: function (data) {
+            for (var i = 0; i < data.length; i++) {
+                pEvent = data[i];
+                var p = purchaseEvent(pEvent.ProductId, pEvent.Price, pEvent.Quantity, pEvent.Time, pEvent.Email, pEvent.SessionId);
+                sendPurchase(p);
+            }
+        }
+    });
+}
+
+function getUser(a) {
+    $.ajax({
+        url: '/api/Product/5',
+        type: 'GET',
+        data: { i1: 1, i2: 2 },
+        datatype: 'json',
+        success: function (data) {
+            var click = clickEvent(a.href, data[0]);
+            sendClick(click);
+        }
+    });
 }
 window.onload = addEventsToPage;
 
@@ -149,4 +171,4 @@ SAS.serverUrl = "/SASServer/SAS";
 
 SAS.update();
 // Update SAS every 15 minutes.
-window.setInterval(SAS.update, 15*60*1000); 
+window.setInterval(SAS.update, 15 * 60 * 1000);
