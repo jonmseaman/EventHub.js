@@ -1,3 +1,4 @@
+/// <reference path="jquery.d.ts" />
 var eventHub = {
     namespace: "ServiceBusIntern2016",
     name: "sellersite",
@@ -68,7 +69,6 @@ var pageData = {
 }
 
 function clickEvent(nextUrl, email) {
-    var user = getUser();
     var click = {
         CurrentUrl: window.location.href,
         NextUrl: nextUrl,
@@ -79,7 +79,7 @@ function clickEvent(nextUrl, email) {
         Email: email,
         // Session Id
         SessionId: "1",
-        EventType: 1,
+        EventType: 1
     }
     return click;
 }
@@ -95,14 +95,13 @@ function purchaseEvent(productId, price, quantity, time, email, sessionId) {
         Email: email,
         // Session Id
         SessionId: sessionId,
-        EventType: 2,
+        EventType: 2
     }
 
     return purchase;
 }
 
 function sendClick(click) {
-    //var click = clickEvent(a.href);
     console.log(JSON.stringify(click));
     eventHub.sendObject(click);
     return true;
@@ -128,8 +127,10 @@ function addEventsToPage() {
     }
 
     // Set up on click events for purchases.
-    var checkoutBtn = document.getElementById('MainContent_CheckoutImageBtn');
-    checkoutBtn.setAttribute("onclick", "getPurchaseData();");
+    var checkoutBtn = document.getElementById("MainContent_CheckoutImageBtn");
+    if (checkoutBtn != null) {
+        checkoutBtn.setAttribute("onclick", "getPurchaseData();");
+    }
 
 }
 
@@ -138,10 +139,9 @@ function getPurchaseData() {
         url: '/api/Product/5',
         type: 'GET',
         data: { s1: 's', i1: 1 },
-        datatype: 'json',
         success: function (data) {
             for (var i = 0; i < data.length; i++) {
-                pEvent = data[i];
+                var pEvent = data[i];
                 var p = purchaseEvent(pEvent.ProductId, pEvent.Price, pEvent.Quantity, pEvent.Time, pEvent.Email, pEvent.SessionId);
                 sendPurchase(p);
             }
@@ -154,7 +154,6 @@ function getUser(a) {
         url: '/api/Product/5',
         type: 'GET',
         data: { i1: 1, i2: 2 },
-        datatype: 'json',
         success: function (data) {
             var click = clickEvent(a.href, data[0]);
             sendClick(click);
